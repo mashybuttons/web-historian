@@ -2,7 +2,6 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
 var httpHelpers = require(path.join(__dirname, '../web/http-helpers.js'));
-console.log(path.join(__dirname, '../web/http-helpers.js'))
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -27,10 +26,15 @@ exports.initialize = function(pathsObj) {
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports.readListOfUrls = function() {
+exports.readListOfUrls = function(callback) {
   //access the sites.txt file
-  // fs.readFile(exports.paths.list, 'utf-8', function(err, data) {
-  // })
+
+  fs.readFile(exports.paths.list, 'utf-8', function(err, data) {
+    var dataArr = data.trim().split('\n'); 
+    callback(dataArr);
+  });
+
+
   //create an array
   //store all values in array 
   //return array
@@ -90,4 +94,19 @@ exports.isUrlArchived = function(url, callback) {
 };
 
 exports.downloadUrls = function() {
+  exports.readListOfUrls(function(array) {
+    for (var i = 0; i < array.length; i++) {
+      exports.isUrlArchived(array[i], function(doesExist) {
+        if (doesExist) {
+          console.log('array[i] does exist');
+          return;
+        } else {
+          console.log('array[i] NO exist');
+          // get the html file from website
+          //use htmlfetch somehow
+          // add that html file to the sites folder;
+        }
+      });
+    }
+  });
 };
