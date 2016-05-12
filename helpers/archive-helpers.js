@@ -78,35 +78,54 @@ exports.addUrlToList = function(data, callback, res) {
 };
 
 exports.isUrlArchived = function(url, callback) {
-
   fs.readdir(exports.paths.archivedSites, function(err, files) {
     if (err) {
       throw err;
     }
     for (var i = 0; i < files.length; i++) {
-      if (('/' + files[i]) === url) {
+      if (('/' + files[i]) === url || files[i] === url) {
         callback(true);
-        return;
+        // return;
       } 
     }
-    callback(false); 
+    callback(false, url); 
   });
 };
 
-exports.downloadUrls = function() {
-  exports.readListOfUrls(function(array) {
-    for (var i = 0; i < array.length; i++) {
-      exports.isUrlArchived(array[i], function(doesExist) {
-        if (doesExist) {
-          console.log('array[i] does exist');
-          return;
-        } else {
-          console.log('array[i] NO exist');
-          // get the html file from website
-          //use htmlfetch somehow
-          // add that html file to the sites folder;
-        }
-      });
-    }
-  });
+exports.downloadUrls = function(array) {
+  for (var i = 0; i < array.length; i++) {
+    exports.isUrlArchived(array[i], function(doesExist, url) {
+      if (doesExist) {
+        console.log('array[i] does exist');
+      } else {
+        console.log('array[i] NO exist');
+        fs.writeFile(exports.paths.archivedSites + '/' + url, "THIS sucks", function(err) {
+          console.log("Im in writefile");
+          if (err) {
+            console.log(err);
+          }
+        });
+      }
+    });
+  }
+  // exports.readListOfUrls(function(array) {
+  //   for (var i = 0; i < array.length; i++) {
+  //     var t = array[i]
+  //     exports.isUrlArchived(array[i], function(doesExist) {
+  //       console.log(t)
+  //       if (doesExist) {
+  //         console.log('array[i] does exist');
+  //       } else {
+  //         console.log('array[i] NO exist');
+  //         fs.writeFile(t, t, function(err) {
+  //           if (err) {
+  //             console.log(err);
+  //           } else {
+  //             // httpHelpers.sendResponse(res, data, 302);
+  //           }
+  //         });
+  //       }
+  //     });
+  //   }
+  // });
 };
