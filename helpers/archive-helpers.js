@@ -28,13 +28,44 @@ exports.initialize = function(pathsObj) {
 exports.readListOfUrls = function() {
 };
 
-exports.isUrlInList = function() {
+exports.isUrlInList = function(url, callback) {
+  //call this SOMEWHERE please1
+  fs.readFile(this.paths.list, 'utf-8', function(err, data) {
+    var dataArr = data.trim().split('\n');
+    for (var i = 0; i < dataArr.length; i++) {
+      if (dataArr[i] === url) {
+        callback(true);
+        return;
+      }
+    }
+    callback(false);
+  });
 };
 
-exports.addUrlToList = function() {
+exports.addUrlToList = function(data) {
+  var that = this; 
+  fs.appendFile(that.paths.list, data, 'utf-8', function(err) {
+    if (err) {
+      throw err;
+    }
+  });
+
 };
 
-exports.isUrlArchived = function() {
+exports.isUrlArchived = function(url, callback) {
+
+  fs.readdir(this.paths.archivedSites, function(err, files) {
+    if (err) {
+      throw err;
+    }
+    for (var i = 0; i < files.length; i++) {
+      if (('/' + files[i]) === url) {
+        callback(true);
+        return;
+      } 
+    }
+    callback(false); 
+  });
 };
 
 exports.downloadUrls = function() {

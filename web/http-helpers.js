@@ -10,12 +10,62 @@ exports.headers = {
   'Content-Type': 'text/html'
 };
 
+var contType = {
+  css: {'Content-Type': 'text/css'},
+  html: {'Content-Type': 'text/html'},
+  js: {'Content-Type': 'text/javascript'}
+};
+
 exports.serveAssets = function(res, asset, callback) {
   // Write some code here that helps serve up your static files!
   // (Static files are things like html (yours or archived from others...),
   // css, or anything that doesn't change often.)
+  
+  filePath = asset;
+  var type = filePath.split('.')[1];
+  callback(filePath, function(error, content) {
+    if (error) {
+      res.writeHead(500);
+      res.end();
+    } else {
+      res.writeHead(200, contType[type]);
+      res.end(content, 'utf-8');
+    }
+  });
+  //   var publicF = asset;
+  // var type;
+  // var publicFArr = ['index.html', 'loading.html', 'styles.css'];
+  // for (var i = 0; i < publicFArr.length; i++) {
+  //   type = publicFArr[i].split('.')[1];
+  //   filePath = publicF + publicFArr[i];
+  //   console.log(filePath, type)
+  //   callback(filePath, function(error, content) {
+  //     if (error) {
+  //       res.writeHead(500);
+  //       res.end();
+  //     } else { 
+  //       console.log(type);
+  //       res.writeHead(200, contType[type]);
+  //       res.end(content, 'utf-8');
+  //     }
+  //   });
+};
+//GET
+exports.sendResponse = function(res, data, statusCode) {
+  statusCode = statusCode || 200;
+  res.writeHead(statusCode, this.headers);
+  res.end(JSON.stringify(data));
 };
 
-
+exports.collectData = function(request, callback) {
+  var data = '';
+  request.on('data', function(chunk) {
+    data += chunk;
+  });
+  request.on('end', function() {
+    console.log(data);
+    callback((data + '\n'));
+  });
+};
 
 // As you progress, keep thinking about what helper functions you can put here!
