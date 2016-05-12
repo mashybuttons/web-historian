@@ -51,7 +51,7 @@ exports.isUrlInList = function(url, callback, res) {
       }
     }
     callback(false);
-    return;
+    return; 
   });
 };
 
@@ -62,11 +62,12 @@ exports.addUrlToList = function(data, callback, res) {
         if (err) {
           throw err;
         } else {
-          httpHelpers.sendResponse(res, data, 302);
+          httpHelpers.serveAssets(res, exports.paths.siteAssets + '/loading.html', fs.readFile);
         }
       });
     } else {
-      console.log('does exist'); 
+      httpHelpers.serveAssets(res, exports.paths.archivedSites + '/' + data, fs.readFile);
+
     }
   });
   // fs.appendFile(exports.paths.list, data, 'utf-8', function(err) {
@@ -96,11 +97,8 @@ exports.downloadUrls = function(array) {
   for (var i = 0; i < array.length; i++) {
     exports.isUrlArchived(array[i], function(doesExist, url) {
       if (doesExist) {
-        console.log('array[i] does exist');
       } else {
-        console.log('array[i] NO exist');
-        fs.writeFile(exports.paths.archivedSites + '/' + url, "THIS sucks", function(err) {
-          console.log("Im in writefile");
+        fs.writeFile(exports.paths.archivedSites + '/' + url, 'THIS sucks', function(err) {
           if (err) {
             console.log(err);
           }

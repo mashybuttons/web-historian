@@ -9,15 +9,19 @@ exports.handleRequest = function (req, res) {
 
   if (req.method === 'GET') {
     if (req.url === '/') {
-      publicF = __dirname + '/public/index.html';
-      httpHelpers.serveAssets(res, publicF, fs.readFile);
+      var index = __dirname + '/public/index.html';
+      //SERVER ONLY index
+      httpHelpers.serveAssets(res, index, fs.readFile);
+    } else if (req.url === '/styles.css') {
+      httpHelpers.serveAssets(res, __dirname + '/public/styles.css', fs.readFile, true);
     } else {
       var archiveUrl = archive.paths.archivedSites + req.url;
       archive.isUrlArchived(req.url, function(doesExist) {
         if (doesExist) {
-          httpHelpers.sendResponse(res, archiveUrl, 200);
+          httpHelpers.serveAssets(res, archiveUrl, fs.readFile);
         } else {
-          httpHelpers.sendResponse(res, null, 404);
+          console.log("IM FALSE, should load load.html");
+          httpHelpers.serveAssets(res, archive.paths.siteAssets + '/loading.html', fs.readFile);
         }
       });
    
