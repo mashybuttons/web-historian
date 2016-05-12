@@ -1,6 +1,8 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var httpHelpers = require(path.join(__dirname, '../web/http-helpers.js'));
+console.log(path.join(__dirname, '../web/http-helpers.js'))
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -26,11 +28,17 @@ exports.initialize = function(pathsObj) {
 // modularize your code. Keep it clean!
 
 exports.readListOfUrls = function() {
+  //access the sites.txt file
+  // fs.readFile(exports.paths.list, 'utf-8', function(err, data) {
+  // })
+  //create an array
+  //store all values in array 
+  //return array
 };
 
-exports.isUrlInList = function(url, callback) {
+exports.isUrlInList = function(url, callback, res) {
   //call this SOMEWHERE please1
-  fs.readFile(this.paths.list, 'utf-8', function(err, data) {
+  fs.readFile(exports.paths.list, 'utf-8', function(err, data) {
     var dataArr = data.trim().split('\n');
     for (var i = 0; i < dataArr.length; i++) {
       if (dataArr[i] === url) {
@@ -39,22 +47,35 @@ exports.isUrlInList = function(url, callback) {
       }
     }
     callback(false);
+    return;
   });
 };
 
-exports.addUrlToList = function(data) {
-  var that = this; 
-  fs.appendFile(that.paths.list, data, 'utf-8', function(err) {
-    if (err) {
-      throw err;
+exports.addUrlToList = function(data, callback, res) {
+  callback(data, function(doesExist) { 
+    if (!doesExist) {
+      fs.appendFile(exports.paths.list, data, 'utf-8', function(err) {
+        if (err) {
+          throw err;
+        } else {
+          httpHelpers.sendResponse(res, data, 302);
+        }
+      });
+    } else {
+      console.log('does exist'); 
     }
   });
+  // fs.appendFile(exports.paths.list, data, 'utf-8', function(err) {
+  //   if (err) {
+  //     throw err;
+  //   }
+  // });
 
 };
 
 exports.isUrlArchived = function(url, callback) {
 
-  fs.readdir(this.paths.archivedSites, function(err, files) {
+  fs.readdir(exports.paths.archivedSites, function(err, files) {
     if (err) {
       throw err;
     }

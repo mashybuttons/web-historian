@@ -57,14 +57,15 @@ exports.sendResponse = function(res, data, statusCode) {
   res.end(JSON.stringify(data));
 };
 
-exports.collectData = function(request, callback) {
+exports.collectData = function(request, callback, res) {
   var data = '';
   request.on('data', function(chunk) {
     data += chunk;
   });
   request.on('end', function() {
-    console.log(data);
-    callback((data + '\n'));
+    data = (data.slice(4)) + '\n';
+    callback(data, archive.isUrlInList, res);
+
   });
 };
 

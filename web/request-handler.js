@@ -23,7 +23,18 @@ exports.handleRequest = function (req, res) {
    
     }
   } else if (req.method === 'POST') {
-    httpHelpers.collectData(req, archive.addUrlToList);
+    httpHelpers.collectData(req, archive.addUrlToList, res);
+    // httpHelpers.collectData(req);
+    // console.log(data, '-----------DATA')
+    // archive.isUrlInList(data, function(doesExist) {
+    //   if (!doesExist) {
+    //     archive.addUrlToList(data);
+    //     httpHelpers.sendResponse(res, null, 302);
+    //   } 
+    // });
+    // httpHelpers.sendResponse(res, null, 302);
+
+
   } else {
     httpHelpers.sendResponse(res, null, 404);
   } 
