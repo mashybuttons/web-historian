@@ -2,7 +2,7 @@ var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
 var httpHelpers = require(path.join(__dirname, '../web/http-helpers.js'));
-
+var htmlfetcher = require(path.join(__dirname, '../workers/htmlfetcher.js'));
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
  * Consider using the `paths` object below to store frequently used file paths. This way,
@@ -44,6 +44,7 @@ exports.isUrlInList = function(url, callback, res) {
   //call this SOMEWHERE please1
   fs.readFile(exports.paths.list, 'utf-8', function(err, data) {
     var dataArr = data.trim().split('\n');
+    url = url.trim();
     for (var i = 0; i < dataArr.length; i++) {
       if (dataArr[i] === url) {
         callback(true);
@@ -66,7 +67,8 @@ exports.addUrlToList = function(data, callback, res) {
         }
       });
     } else {
-      httpHelpers.serveAssets(res, exports.paths.archivedSites + '/' + data, fs.readFile);
+      console.log("IM HERE trying to load archive site"); 
+      httpHelpers.serveAssets(res, exports.paths.archivedSites + '/' + data.trim(), fs.readFile);
 
     }
   });
@@ -84,6 +86,7 @@ exports.isUrlArchived = function(url, callback) {
       throw err;
     }
     for (var i = 0; i < files.length; i++) {
+
       if (('/' + files[i]) === url || files[i] === url) {
         callback(true);
         // return;
@@ -96,13 +99,11 @@ exports.isUrlArchived = function(url, callback) {
 exports.downloadUrls = function(array) {
   for (var i = 0; i < array.length; i++) {
     exports.isUrlArchived(array[i], function(doesExist, url) {
+      console.log("IM IN downloadUrls")
       if (doesExist) {
+        console.log("I do exist in downloadUrls")
       } else {
-        fs.writeFile(exports.paths.archivedSites + '/' + url, 'THIS sucks', function(err) {
-          if (err) {
-            console.log(err);
-          }
-        });
+        htmlfetcher.getPage(url);
       }
     });
   }

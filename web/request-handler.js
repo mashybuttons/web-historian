@@ -18,6 +18,7 @@ exports.handleRequest = function (req, res) {
       var archiveUrl = archive.paths.archivedSites + req.url;
       archive.isUrlArchived(req.url, function(doesExist) {
         if (doesExist) {
+          console.log("TRYING TO LOAD", archiveUrl)
           httpHelpers.serveAssets(res, archiveUrl, fs.readFile);
         } else {
           console.log("IM FALSE, should load load.html");

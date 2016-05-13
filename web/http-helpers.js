@@ -16,6 +16,8 @@ var contType = {
   js: {'Content-Type': 'text/javascript'}
 };
 
+
+
 exports.serveAssets = function(res, pathFile, callback, areucss) {
   // Write some code here that helps serve up your static files!
   // (Static files are things like html (yours or archived from others...),
@@ -37,8 +39,10 @@ exports.serveAssets = function(res, pathFile, callback, areucss) {
         res.writeHead(500);
         res.end();
       } else {
+        //content is a buffer of HTML
+        //need to convert buffer back to html
         res.writeHead(200, this.headers);
-        res.end(content, 'utf-8');
+        res.end(content.toString('ascii'));
       }
     });
   }

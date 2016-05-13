@@ -2,6 +2,10 @@ var http = require('http');
 var handler = require('./request-handler');
 var initialize = require('./initialize.js');
 var fs = require('fs');
+var archive = require('../helpers/archive-helpers.js');
+var httpHelpers = require('../web/http-helpers.js');
+var htmlfetcher = require('../workers/htmlfetcher.js');
+
 
 
 // Why do you think we have this here?
